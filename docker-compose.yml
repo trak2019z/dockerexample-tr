@@ -1,0 +1,36 @@
+version: '3.0'
+services:
+    postgres:
+        image: postgres:9.6
+        hostname: postgres
+        container_name: postgres
+        volumes:
+        - postgres_data:/var/lib/postgresql/data
+        ports:
+        - "127.0.0.1:5433:5432"
+        restart: unless-stopped
+    auth:
+        image: auth:develop
+        build: ./backend
+        hostname: auth
+        container_name: auth
+        environment:
+            SPRING_PROFILES_ACTIVE: dev
+        stdin_open: true
+        tty: true
+        volumes:
+        - auth_data:/srv/auth
+        ports:
+        - "127.0.0.1:8080:8080"
+        depends_on:
+        - postgres
+        restart: unless-stopped
+    dockertest:
+        image: dockertest:develop
+        build: ./frontend
+        ports:
+        - "127.0.0.1:3000:80"
+        restart: unless-stopped
+volumes:
+ postgres_data:
+ auth_data:
