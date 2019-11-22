@@ -7,7 +7,7 @@ services:
         volumes:
         - postgres_data:/var/lib/postgresql/data
         ports:
-        - "127.0.0.1:5433:5432"
+        - "127.0.0.1:5432:5432"
         restart: unless-stopped
     auth:
         image: auth:develop
@@ -21,13 +21,15 @@ services:
         volumes:
         - auth_data:/srv/auth
         ports:
-        - "127.0.0.1:8080:8080"
+        - "127.0.0.1:3001:8080"
         depends_on:
         - postgres
         restart: unless-stopped
     dockertest:
         image: dockertest:develop
         build: ./frontend
+        hostname: dockertest
+        container_name: dockertest
         ports:
         - "127.0.0.1:3000:80"
         restart: unless-stopped
